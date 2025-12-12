@@ -1,10 +1,14 @@
 import React, { useState } from 'react';
 import { Upload, FileText, Image, CheckCircle, XCircle, AlertTriangle, ChevronDown, ChevronRight, Download, Search, Loader } from 'lucide-react';
+import { getThemeFromURL } from './themes/themes';
 
 const App = () => {
   const [currentStep, setCurrentStep] = useState('upload'); // upload, analyzing, report
   const [uploadedFile, setUploadedFile] = useState(null);
   const [analysisProgress, setAnalysisProgress] = useState(0);
+  
+  // Get theme from URL parameter
+  const theme = getThemeFromURL();
 
   // Mock data for the report
   const mockReport = {
@@ -160,15 +164,15 @@ const App = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
+    <div className={`min-h-screen bg-gradient-to-br ${theme.pageBackground}`}>
       {/* Header */}
-      <div className="bg-white border-b border-slate-200 shadow-sm">
+      <div className={`${theme.headerBackground} border-b ${theme.headerBorder} shadow-sm`}>
         <div className="max-w-7xl mx-auto px-6 py-4">
           <div className="flex items-center gap-3">
-            <FileText className="w-8 h-8 text-blue-600" />
+            <FileText className={`w-8 h-8 ${theme.headerIcon}`} />
             <div>
-              <h1 className="text-2xl font-bold text-slate-900">Blueprint Compliance Checker</h1>
-              <p className="text-sm text-slate-600">105(l) Lease Facility Requirements Analysis</p>
+              <h1 className={`text-2xl font-bold ${theme.headerTitle}`}>Blueprint Compliance Checker</h1>
+              <p className={`text-sm ${theme.headerSubtitle}`}>105(l) Lease Facility Requirements Analysis</p>
             </div>
           </div>
         </div>
@@ -177,25 +181,25 @@ const App = () => {
       <div className="max-w-7xl mx-auto px-6 py-8">
         {/* Progress Steps */}
         <div className="mb-8 flex items-center justify-center gap-4">
-          <StepIndicator number={1} label="Upload" active={currentStep === 'upload'} completed={currentStep !== 'upload'} />
-          <div className="w-16 h-0.5 bg-slate-300"></div>
-          <StepIndicator number={2} label="Analysis" active={currentStep === 'analyzing'} completed={currentStep === 'report'} />
-          <div className="w-16 h-0.5 bg-slate-300"></div>
-          <StepIndicator number={3} label="Report" active={currentStep === 'report'} />
+          <StepIndicator number={1} label="Upload" active={currentStep === 'upload'} completed={currentStep !== 'upload'} theme={theme} />
+          <div className={`w-16 h-0.5 ${theme.stepDivider}`}></div>
+          <StepIndicator number={2} label="Analysis" active={currentStep === 'analyzing'} completed={currentStep === 'report'} theme={theme} />
+          <div className={`w-16 h-0.5 ${theme.stepDivider}`}></div>
+          <StepIndicator number={3} label="Report" active={currentStep === 'report'} theme={theme} />
         </div>
 
         {/* Upload View */}
         {currentStep === 'upload' && (
           <div className="max-w-2xl mx-auto">
-            <div className="bg-white rounded-xl shadow-lg p-8 border border-slate-200">
+            <div className={`${theme.cardBackground} rounded-xl shadow-lg p-8 border ${theme.cardBorder}`}>
               <div className="text-center mb-6">
-                <Upload className="w-16 h-16 text-blue-600 mx-auto mb-4" />
-                <h2 className="text-2xl font-bold text-slate-900 mb-2">Upload Blueprint</h2>
-                <p className="text-slate-600">Upload a blueprint or floor plan to check compliance with 105(l) lease facility requirements</p>
+                <Upload className={`w-16 h-16 ${theme.headerIcon} mx-auto mb-4`} />
+                <h2 className={`text-2xl font-bold ${theme.textPrimary} mb-2`}>Upload Blueprint</h2>
+                <p className={theme.textSecondary}>Upload a blueprint or floor plan to check compliance with 105(l) lease facility requirements</p>
               </div>
 
               <label className="block">
-                <div className="border-2 border-dashed border-slate-300 rounded-lg p-12 text-center hover:border-blue-400 hover:bg-blue-50 transition-colors cursor-pointer">
+                <div className={`border-2 border-dashed ${theme.uploadBorder} rounded-lg p-12 text-center transition-colors cursor-pointer`}>
                   <input 
                     type="file" 
                     className="hidden" 
@@ -206,15 +210,15 @@ const App = () => {
                     <div className="flex items-center justify-center gap-3">
                       <Image className="w-8 h-8 text-green-600" />
                       <div className="text-left">
-                        <p className="font-semibold text-slate-900">{uploadedFile.name}</p>
-                        <p className="text-sm text-slate-600">{(uploadedFile.size / 1024 / 1024).toFixed(2)} MB</p>
+                        <p className={`font-semibold ${theme.textPrimary}`}>{uploadedFile.name}</p>
+                        <p className={`text-sm ${theme.textSecondary}`}>{(uploadedFile.size / 1024 / 1024).toFixed(2)} MB</p>
                       </div>
                     </div>
                   ) : (
                     <>
-                      <Upload className="w-12 h-12 text-slate-400 mx-auto mb-3" />
-                      <p className="text-slate-700 font-medium">Click to upload or drag and drop</p>
-                      <p className="text-sm text-slate-500 mt-1">PDF, PNG, JPG up to 10MB</p>
+                      <Upload className={`w-12 h-12 ${theme.uploadIcon} mx-auto mb-3`} />
+                      <p className={`${theme.textPrimary} font-medium`}>Click to upload or drag and drop</p>
+                      <p className={`text-sm ${theme.textTertiary} mt-1`}>PDF, PNG, JPG up to 10MB</p>
                     </>
                   )}
                 </div>
@@ -223,16 +227,16 @@ const App = () => {
               {uploadedFile && (
                 <button 
                   onClick={startAnalysis}
-                  className="w-full mt-6 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-lg transition-colors"
+                  className={`w-full mt-6 ${theme.primaryButton} ${theme.primaryButtonText} font-semibold py-3 rounded-lg transition-colors`}
                 >
                   Analyze Blueprint
                 </button>
               )}
             </div>
 
-            <div className="mt-6 bg-blue-50 rounded-lg p-4 border border-blue-200">
-              <h3 className="font-semibold text-blue-900 mb-2">What We Check:</h3>
-              <ul className="text-sm text-blue-800 space-y-1">
+            <div className={`mt-6 ${theme.infoBackground} rounded-lg p-4 border`}>
+              <h3 className={`font-semibold ${theme.infoTitle} mb-2`}>What We Check:</h3>
+              <ul className={`text-sm ${theme.infoText} space-y-1`}>
                 <li>• Space requirements and square footage</li>
                 <li>• ADA accessibility and door widths</li>
                 <li>• Fire safety equipment placement</li>
@@ -247,21 +251,21 @@ const App = () => {
         {/* Analyzing View */}
         {currentStep === 'analyzing' && (
           <div className="max-w-2xl mx-auto">
-            <div className="bg-white rounded-xl shadow-lg p-12 border border-slate-200">
+            <div className={`${theme.cardBackground} rounded-xl shadow-lg p-12 border ${theme.cardBorder}`}>
               <div className="text-center">
                 <div className="relative w-24 h-24 mx-auto mb-6">
-                  <Loader className="w-24 h-24 text-blue-600 animate-spin" />
+                  <Loader className={`w-24 h-24 ${theme.loaderIcon} animate-spin`} />
                 </div>
-                <h2 className="text-2xl font-bold text-slate-900 mb-2">Analyzing Blueprint</h2>
-                <p className="text-slate-600 mb-6">Our AI is examining your blueprint against policy requirements...</p>
+                <h2 className={`text-2xl font-bold ${theme.textPrimary} mb-2`}>Analyzing Blueprint</h2>
+                <p className={`${theme.textSecondary} mb-6`}>Our AI is examining your blueprint against policy requirements...</p>
                 
-                <div className="w-full bg-slate-200 rounded-full h-3 mb-4">
+                <div className={`w-full ${theme.progressBar} rounded-full h-3 mb-4`}>
                   <div 
-                    className="bg-blue-600 h-3 rounded-full transition-all duration-300"
+                    className={`${theme.progressFill} h-3 rounded-full transition-all duration-300`}
                     style={{ width: `${analysisProgress}%` }}
                   ></div>
                 </div>
-                <p className="text-sm text-slate-600">{analysisProgress}% Complete</p>
+                <p className={`text-sm ${theme.textSecondary}`}>{analysisProgress}% Complete</p>
 
                 <div className="mt-8 space-y-3 text-left">
                   <AnalysisStep label="Extracting blueprint features" completed={analysisProgress > 20} />
@@ -277,23 +281,23 @@ const App = () => {
 
         {/* Report View */}
         {currentStep === 'report' && (
-          <ComplianceReport report={mockReport} onReset={resetApp} />
+          <ComplianceReport report={mockReport} onReset={resetApp} theme={theme} />
         )}
       </div>
     </div>
   );
 };
 
-const StepIndicator = ({ number, label, active, completed }) => (
+const StepIndicator = ({ number, label, active, completed, theme }) => (
   <div className="flex flex-col items-center">
     <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm transition-colors ${
-      completed ? 'bg-green-600 text-white' :
-      active ? 'bg-blue-600 text-white' : 
-      'bg-slate-300 text-slate-600'
+      completed ? theme.stepCompleted + ' text-white' :
+      active ? theme.stepActive + ' text-white' : 
+      theme.stepInactive + ' text-slate-600'
     }`}>
       {completed ? <CheckCircle className="w-5 h-5" /> : number}
     </div>
-    <span className={`text-xs mt-1 font-medium ${active ? 'text-slate-900' : 'text-slate-600'}`}>{label}</span>
+    <span className={`text-xs mt-1 font-medium ${active ? theme.textPrimary : theme.textSecondary}`}>{label}</span>
   </div>
 );
 
@@ -308,7 +312,7 @@ const AnalysisStep = ({ label, completed }) => (
   </div>
 );
 
-const ComplianceReport = ({ report, onReset }) => {
+const ComplianceReport = ({ report, onReset, theme }) => {
   const [expandedCategories, setExpandedCategories] = useState({});
 
   const toggleCategory = (category) => {
@@ -329,18 +333,18 @@ const ComplianceReport = ({ report, onReset }) => {
 
   const getCategoryStatus = (status) => {
     switch(status) {
-      case 'compliant': return { bg: 'bg-green-100', text: 'text-green-800', icon: <CheckCircle className="w-5 h-5" /> };
-      case 'violation': return { bg: 'bg-red-100', text: 'text-red-800', icon: <XCircle className="w-5 h-5" /> };
-      case 'warning': return { bg: 'bg-amber-100', text: 'text-amber-800', icon: <AlertTriangle className="w-5 h-5" /> };
-      default: return { bg: 'bg-slate-100', text: 'text-slate-800' };
+      case 'compliant': return { bg: theme.categoryCompliant, icon: <CheckCircle className="w-5 h-5" /> };
+      case 'violation': return { bg: theme.categoryViolation, icon: <XCircle className="w-5 h-5" /> };
+      case 'warning': return { bg: theme.categoryWarning, icon: <AlertTriangle className="w-5 h-5" /> };
+      default: return { bg: 'bg-slate-100 text-slate-800' };
     }
   };
 
   return (
     <div className="space-y-6">
       {/* Summary Cards */}
-      <div className="bg-white rounded-xl shadow-lg border border-slate-200 overflow-hidden">
-        <div className="bg-gradient-to-r from-blue-600 to-blue-700 text-white px-6 py-6">
+      <div className={`${theme.cardBackground} rounded-xl shadow-lg border ${theme.cardBorder} overflow-hidden`}>
+        <div className={`bg-gradient-to-r ${theme.reportHeaderGradient} text-white px-6 py-6`}>
           <div className="flex items-center justify-between">
             <div>
               <h2 className="text-2xl font-bold mb-1">Compliance Report</h2>
@@ -348,7 +352,7 @@ const ComplianceReport = ({ report, onReset }) => {
             </div>
             <button 
               onClick={onReset}
-              className="bg-white text-blue-600 px-4 py-2 rounded-lg font-medium hover:bg-blue-50 transition-colors"
+              className={`${theme.reportHeaderButton} px-4 py-2 rounded-lg font-medium transition-colors`}
             >
               New Analysis
             </button>
@@ -361,37 +365,37 @@ const ComplianceReport = ({ report, onReset }) => {
               label="Compliant" 
               value={report.summary.compliant} 
               total={report.summary.totalChecks}
-              color="green"
+              color={theme.summaryGreen}
               icon={<CheckCircle className="w-6 h-6" />}
             />
             <SummaryCard 
               label="Violations" 
               value={report.summary.violations} 
               total={report.summary.totalChecks}
-              color="red"
+              color={theme.summaryRed}
               icon={<XCircle className="w-6 h-6" />}
             />
             <SummaryCard 
               label="Warnings" 
               value={report.summary.warnings} 
               total={report.summary.totalChecks}
-              color="amber"
+              color={theme.summaryAmber}
               icon={<AlertTriangle className="w-6 h-6" />}
             />
             <SummaryCard 
               label="Total Checks" 
               value={report.summary.totalChecks} 
-              color="blue"
+              color={theme.summaryBlue}
               icon={<Search className="w-6 h-6" />}
             />
           </div>
 
           <div className="flex items-center justify-between pt-4 border-t border-slate-200">
-            <div className="text-sm text-slate-600">
+            <div className={`text-sm ${theme.textSecondary}`}>
               <span className="font-medium">Facility Type:</span> {report.blueprint.facilityType} • 
               <span className="font-medium"> Area:</span> {report.blueprint.totalArea}
             </div>
-            <button className="flex items-center gap-2 text-blue-600 hover:text-blue-700 font-medium text-sm">
+            <button className={`flex items-center gap-2 ${theme.exportButton} font-medium text-sm`}>
               <Download className="w-4 h-4" />
               Export Report
             </button>
@@ -406,18 +410,18 @@ const ComplianceReport = ({ report, onReset }) => {
           const isExpanded = expandedCategories[category.category];
 
           return (
-            <div key={idx} className="bg-white rounded-xl shadow-lg border border-slate-200 overflow-hidden">
+            <div key={idx} className={`${theme.cardBackground} rounded-xl shadow-lg border ${theme.cardBorder} overflow-hidden`}>
               <button
                 onClick={() => toggleCategory(category.category)}
                 className="w-full px-6 py-4 flex items-center justify-between hover:bg-slate-50 transition-colors"
               >
                 <div className="flex items-center gap-3">
-                  <div className={`${statusStyle.bg} ${statusStyle.text} p-2 rounded-lg`}>
+                  <div className={`${statusStyle.bg} p-2 rounded-lg`}>
                     {statusStyle.icon}
                   </div>
                   <div className="text-left">
-                    <h3 className="font-bold text-slate-900">{category.category}</h3>
-                    <p className="text-sm text-slate-600">{category.items.length} checks performed</p>
+                    <h3 className={`font-bold ${theme.textPrimary}`}>{category.category}</h3>
+                    <p className={`text-sm ${theme.textSecondary}`}>{category.items.length} checks performed</p>
                   </div>
                 </div>
                 {isExpanded ? (
@@ -434,17 +438,17 @@ const ComplianceReport = ({ report, onReset }) => {
                       <div className="flex items-start gap-3 mb-3">
                         {getStatusIcon(item.status)}
                         <div className="flex-1">
-                          <h4 className="font-semibold text-slate-900 mb-1">{item.check}</h4>
-                          <p className="text-slate-700 text-sm mb-3">{item.finding}</p>
+                          <h4 className={`font-semibold ${theme.textPrimary} mb-1`}>{item.check}</h4>
+                          <p className={`text-slate-700 text-sm mb-3`}>{item.finding}</p>
                           
                           <div className="space-y-2">
                             <DetailRow label="Blueprint" text={item.blueprint} />
                             <DetailRow label="Policy" text={item.policy} />
                             <DetailRow label="Citation" text={item.citation} />
                             {item.recommendation && (
-                              <div className="mt-3 bg-blue-50 border border-blue-200 rounded-lg p-3">
-                                <p className="text-sm font-medium text-blue-900 mb-1">Recommendation:</p>
-                                <p className="text-sm text-blue-800">{item.recommendation}</p>
+                              <div className={`mt-3 ${theme.recommendationBackground} border rounded-lg p-3`}>
+                                <p className={`text-sm font-medium ${theme.recommendationTitle} mb-1`}>Recommendation:</p>
+                                <p className={`text-sm ${theme.recommendationText}`}>{item.recommendation}</p>
                               </div>
                             )}
                           </div>
@@ -463,15 +467,8 @@ const ComplianceReport = ({ report, onReset }) => {
 };
 
 const SummaryCard = ({ label, value, total, color, icon }) => {
-  const colors = {
-    green: 'bg-green-50 text-green-700 border-green-200',
-    red: 'bg-red-50 text-red-700 border-red-200',
-    amber: 'bg-amber-50 text-amber-700 border-amber-200',
-    blue: 'bg-blue-50 text-blue-700 border-blue-200'
-  };
-
   return (
-    <div className={`${colors[color]} border rounded-lg p-4`}>
+    <div className={`${color} border rounded-lg p-4`}>
       <div className="flex items-center gap-2 mb-2">
         {icon}
         <span className="text-sm font-medium">{label}</span>
