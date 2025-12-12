@@ -143,18 +143,45 @@ const App = () => {
     }
   };
 
-  const startAnalysis = () => {
+  const startAnalysis = async () => {
     setCurrentStep('analyzing');
-    // Simulate analysis progress
+    
+    // Create FormData to send the file
+    const formData = new FormData();
+    formData.append('file', uploadedFile);
+    
     let progress = 0;
-    const interval = setInterval(() => {
+    const progressInterval = setInterval(() => {
       progress += 10;
       setAnalysisProgress(progress);
-      if (progress >= 100) {
-        clearInterval(interval);
-        setTimeout(() => setCurrentStep('report'), 500);
+      if (progress >= 90) {
+        clearInterval(progressInterval);
       }
     }, 400);
+    
+    try {
+      // Call your Python backend
+      const response = await fetch('/api/analyzeblueprint', {
+        method: 'POST',
+        body: formData
+      });
+      
+      const result = await response.json();
+      console.log(result);
+      
+      // Update progress to 100%
+      clearInterval(progressInterval);
+      setAnalysisProgress(100);
+      
+      // You can update mockReport with real results here
+      // setAnalysisResults(result.data);
+      
+      setTimeout(() => setCurrentStep('report'), 500);
+    } catch (error) {
+      console.error('Analysis failed:', error);
+      clearInterval(progressInterval);
+      // Handle error appropriately
+    }
   };
 
   const resetApp = () => {

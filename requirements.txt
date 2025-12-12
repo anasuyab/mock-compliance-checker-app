@@ -1,0 +1,4 @@
+# requirements.txt in the project root
+# Add any dependencies your script uses, e.g., Flask, requests, etc.
+# If you only use standard libraries, you can put:
+requests
