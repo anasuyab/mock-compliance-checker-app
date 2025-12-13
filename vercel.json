@@ -17,5 +17,10 @@
       "src": "/api/(.*)",
       "dest": "/api/$1"
     }
-  ]
+  ],
+
+  "dev": {
+    "framework": "react",
+    "command": "npm run start"
+  }
 }
